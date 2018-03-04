@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Select Batch to View
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Your RVTOOLS Data Sets</h1>
+    </div>
+
+   <div class="container">
+        <form method="get" action="/rvt/upload">
+            <button type="submit" class="btn btn-lg btn-primary">Add File</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Organization</th>
+                <th>Assessment</th>
+                <th>Batch #</th>
+                <th>File Name</th>
+                <th>Date/Time Created</th>
+                <th colspan="2">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if batches %}
+                {% for batch in batches %}
+                    <tr>
+                        <td><b><a href="/org/view/{{ batch.rvt_vi_assessment.assess_org.id }}/">{{ batch.rvt_vi_assessment.assess_org.org_name }}</a></b></td>
+                        <td><b><a href="/org/assessment/view/{{ batch.rvt_vi_assessment.id }}/">{{ batch.rvt_vi_assessment.assess_name }}</b></td>
+                        <td>{{ batch.rvt_vi_batch }}</td>
+                        <td>{{ batch.rvt_vi_filename }}</td>
+                        <td><i>{{ batch.load_vi_time }}</i></td>
+                        <td>
+                            <form method="get" action="/rvt/viewrvt/{{ batch.rvt_vi_batch }}/">
+                                <button type="submit" class="btn btn-xs btn-success">View</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="get" action="/rvt/delete/{{ batch.rvt_vi_batch }}/">
+                                <button type="submit" class="btn btn-xs btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td>None Yet Created</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                    <td>--</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

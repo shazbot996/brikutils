@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+
+{% block title %}
+Welcome
+{% endblock %}
+
+{% block content %}
+    <div class="jumbotron">
+        <div class="container">
+            <h1>Welcome to BrikUtils!</h1>
+            <p>A collection of (hopefully) useful Rubrik processes</p>
+        </div>
+    </div>
+{% endblock %}
+
+{% block applist %}
+    <div class="row">
+        {% include "app/app_snip_columns.html" with col_heading="RVTOOLS Analysis" col_message="It's like a spreadsheet, only faster!" appurl="rvt_index" %}
+        {% include "app/app_snip_columns.html" with col_heading="AutoBrik" col_message="Loops, Lists & Custom Rubrik API Manipulation. Ever want to do something over and over again to a Rubrik object?  Now's your chance!" appurl="autobrik_home" %}
+    </div>
+{% endblock %}

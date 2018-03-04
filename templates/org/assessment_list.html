@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Select Assessment to View
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Your Assessments</h1>
+    </div>
+    <div class="container">
+        <form method="get" action="/org/assessment/add">
+            <button type="submit" class="btn btn-lg btn-primary">Add Assessment</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Organization</th>
+                <th>Assessment Name</th>
+                <th>Date/Time Created</th>
+                <th colspan="2">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if assessment_list %}
+                {% for assessment in assessment_list %}
+                    <tr>
+                        <td><b><a href="/org/view/{{ assessment.assess_org_id }}/">{{ assessment.assess_org }}</a></b></td>
+                        <td>{{ assessment.assess_name }}</td>
+                        <td><i>{{ assessment.load_time }}</i></td>
+                        <td>
+                            <form method="get" action="/org/assessment/view/{{ assessment.id }}/">
+                                <button type="submit" class="btn btn-xs btn-success">View</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="get" action="/org/assessment/edit/{{ assessment.id }}/">
+                                <button type="submit" class="btn btn-xs btn-primary">Edit</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="get" action="/org/assessment/delete/{{ assessment.id }}/">
+                                <button type="submit" class="btn btn-xs btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td>None Yet Created</td>
+                    <td>--</td>
+                    <td>--</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

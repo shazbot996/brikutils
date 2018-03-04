@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Assessment Details
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Assessment Details</h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-8">
+          <div class="panel panel-default">
+            <div class="panel-heading">
+              <h3 class="panel-title">Assessment Details</h3>
+            </div>
+            <div class="panel-body">
+                <div class="table-responsive">
+                <table class="table table-striped">
+                    <tr>
+                        <td><b>Name: </b><i>{{ thisassessment.assess_name }}</i></td>
+                    </tr>
+                    <tr>
+                        <td><b>Contact: </b><i>{{ thisassessment.assess_org.org_name }}</i></td>
+                    </tr>
+                    <tr>
+                        <td><b>Created: </b><i>{{ thisassessment.load_time }}</i></td>
+                    </tr>
+                </table>
+                </div>
+            </div>
+          </div>
+        </div>
+        <div class="col-sm-4">
+          <div class="panel panel-primary">
+            <div class="panel-heading">
+              <h3 class="panel-title">Actions</h3>
+            </div>
+            <div class="panel-body">
+                <table width="150">
+                    <tr>
+                        <td><form method="get" action="/org/assessment/edit/{{ thisassessment.id }}/"><button class="btn btn-xs btn-primary" type="submit">Edit</button></form></td>
+                        <td><form method="get" action="/org/assessment/delete/{{ thisassessment.id }}/"><button class="btn btn-xs btn-danger" type="submit">Delete</button></form></td>
+                    </tr>
+                </table>
+            </div>
+          </div>
+        </div>
+    </div
+{% endblock %}

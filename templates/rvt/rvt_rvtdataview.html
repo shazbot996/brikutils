@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    View CSV Data
+{% endblock %}
+
+{% block content %}
+    <h2 class="sub-header">VM List (vInfo) For Batch {{ batch }}</h2>
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>VM</th>
+                <th>Powerstate</th>
+                <th>Guest State</th>
+                <th>Prov</th>
+                <th>In USe</th>
+                <th>Ushared</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% for record in records %}
+            <tr>
+                <td>{{ record.rvt_vi_vm }}</td>
+                <td>{{ record.rvt_vi_powerstate }}</td>
+                <td>{{ record.rvt_vi_guest_state }}</td>
+                <td>{{ record.rvt_vi_provisioned_mb }}t</td>
+                <td>{{ record.rvt_vi_in_use_mb }}</td>
+                <td>{{ record.rvt_vi_unshared_mb }}</td>
+            </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+{% endblock %}

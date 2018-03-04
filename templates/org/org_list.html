@@ -1,0 +1,62 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Select Organization to View
+{% endblock %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Your Organizations</h1>
+    </div>
+    <div class="container">
+        <form method="get" action="/org/add">
+            <button type="submit" class="btn btn-lg btn-primary">Add Organization</button>
+        </form>
+        <br/>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>Organization Name</th>
+                <th>Organization Contact</th>
+                <th>Date/Time Added</th>
+                <th colspan="3">Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            {% if org_list %}
+                {% for org in org_list %}
+                    <tr>
+                        <td><b>{{ org.org_name }}</b></td>
+                        <td>{{org.org_contact}}</td>
+                        <td><i>{{ org.load_time }}</i></td>
+                        <td>
+                            <form method="get" action="/org/view/{{ org.id }}/">
+                                <button type="submit" class="btn btn-xs btn-success">View</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="get" action="/org/edit/{{ org.id }}/">
+                                <button type="submit" class="btn btn-xs btn-primary">Edit</button>
+                            </form>
+                        </td>
+                        <td>
+                            <form method="get" action="/org/delete/{{ org.id }}/">
+                                <button type="submit" class="btn btn-xs btn-danger">Delete</button>
+                            </form>
+                        </td>
+                    </tr>
+                {% endfor %}
+            {% else %}
+                <tr>
+                    <td>None Yet Created</td>
+                    <td>--</td>
+                    <td>--</td>
+                </tr>
+            {% endif %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

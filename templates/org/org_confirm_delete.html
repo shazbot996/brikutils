@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}
+    Organization Delete
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-sm-8">
+      <div class="panel panel-danger">
+        <div class="panel-heading">
+            <h3 class="panel-title">Warning:</h3>
+            </div>
+            <div class="panel-body">
+                <form action="" method="post">{% csrf_token %}
+                <p>Are you sure you want to delete "{{ object }}"?  This will delete ALL related records, assessments etc.!</p>
+                <input type="submit" value="Confirm" />
+                </form>
+            </div>
+      </div>
+    </div>
+</div>
+{% endblock %}

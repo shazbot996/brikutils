@@ -1,0 +1,30 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    Add Assessment
+{% endblock %}
+
+{% block content %}
+    <div class="{{ style }}">
+        <div class="container">
+            {{ message }}
+        </div>
+    </div>
+    <div class="page-header">
+        <h1>Add Assessment</h1>
+    </div>
+    <div class="container">
+        <form role="form"
+              enctype="multipart/form-data"
+              action="{% url 'assess_add' %}"
+              method="post">
+
+            {{  form | crispy }}
+
+            {% csrf_token %}
+
+            <button type="submit" class="btn btn-success">Submit Data</button>
+        </form>
+     </div>
+{% endblock %}

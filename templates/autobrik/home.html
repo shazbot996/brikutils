@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="page-header">
+        <h1>Brik Automation Utilities</h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">Looper</h3>
+                </div>
+                <div class="panel-body">
+                    Ever want to iterate stuff?  I know I would!
+                </div>
+            </div>
+        </div>
+        <div class="col-sm-4">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    <h3 class="panel-title">List Tasks</h3>
+                </div>
+                <div class="panel-body">
+                    Got a list of stuff you need manipulated?  Let's get manipulative!
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="page-header">
+        <h1>Games App (remove - testing models)</h1>
+    </div>
+    <div class="row">
+        <div class="col-sm-4">
+            <ul class="list-group">
+                {% for g in games %}
+                    <li class="list-group-item">Game {{ g.id }}: {{ g.first_player }} vs {{ g.second_player }}</li>
+                {% endfor %}
+            </ul>
+        </div><!-- /.col-sm-4 -->
+    </div>
+
+
+    {% if user.is_authenticated %}
+        <li><a href="{% url 'autobrik_new_vmdata' %}">Submit New Data</a></li>
+    {% endif %}
+{% endblock %}

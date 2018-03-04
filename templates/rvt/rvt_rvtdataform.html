@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+    New CSV Data
+{% endblock %}
+
+{% block content %}
+    <div class="{{ style }}">
+        <div class="container">
+            {{ filename }}
+        </div>
+    </div>
+    <div class="page-header">
+        <h1>Upload RVTOOLS Data File (CSV)</h1>
+    </div>
+
+    <div class="well">
+        <div class="container">
+            <form role="form"
+                  enctype="multipart/form-data"
+                  action="{% url 'rvt_upload' %}"
+                  method="post">
+
+                {{  form | crispy }}
+
+                <select name="assessment" required>
+                    <option value="">--SELECT--</option>
+                    {% for assessment in assessments %}
+                        <option value="{{assessment.id}}">{{ assessment.assess_org.org_name }} - {{assessment.assess_name}}</option>
+                    {% endfor %}
+                </select>
+
+                {% csrf_token %}
+
+            </div>
+            <div class="container">
+                <hr>
+                <button type="submit" class="btn btn-success">Upload File</button>
+            </div>
+        </form>
+     </div>
+     <div class="row">
+        <div class="col-sm-6">
+          <div class="panel panel-danger">
+            <div class="panel-heading">
+              <h3 class="panel-title">[vInfo] Worksheet</h3>
+            </div>
+            <div class="panel-body">
+              <p>Upload a .CSV version of the [vInfo] worksheet from a valid RVTOOLS export.</p>
+            </div>
+          </div>
+        </div>
+    </div>
+{% endblock %}
