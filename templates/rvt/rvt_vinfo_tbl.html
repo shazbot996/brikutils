@@ -1,30 +1,44 @@
 <!--Separate Include for sub-table view of vdisks -->
 {% load humanize %}
-<table class="table table-bordered table-striped">
-    <tbody>
-    {% if vinfo %}
-        <tr>
-            <th></th>
-            <th>vDisks</th>
-            <th>Powerstate On/Off</th>
-            <th>Unshared TB</th>
-            <th>In-Use TB</th>
-            <th>Provisioned TB</th>
-            <th>Disk Count</th>
-        </tr>
-        <tr>
-            <td><b>vInfo</b></td>
-            <td>{{ vinfo.count }}</td>
-            <td>{{ pwron }} / {{ pwroff }}</td>
-            <td>{{ unshared|floatformat:"1"|intcomma }}</td>
-            <td>{{ used|floatformat:"1"|intcomma }}</td>
-            <td>{{ prov|floatformat:"1"|intcomma }}</td>
-            <td>{{ disktotal }}</td>
-        </tr>
-    {% else %}
-        <tr>
-            <td>None Yet Created</td>
-        </tr>
-    {% endif %}
-    </tbody>
-</table>
+<div class="col-sm-5">
+                <table class="table table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <th>VM Count</th><td align="center">{{ vinfo.count }}</td>
+                        </tr>
+                        <tr>
+                            <th>In-Use TB</th><td align="center">{{ used|floatformat:"1"|intcomma }}</td>
+                        </tr>
+                        <tr>
+                            <th>Unshared TB</th><td align="center">{{ unshared|floatformat:"1"|intcomma }}</td>
+                        </tr>
+                        <tr>
+                            <th>Provisioned TB</th><td align="center">{{ prov|floatformat:"1"|intcomma }}</td>
+                        </tr>
+                        <tr>
+                            <th>Disk Count</th><td align="center">{{ disktotal }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+</div>
+<div class="col-sm-6">
+                <table class="table table-bordered table-striped">
+                    <tbody>
+                        <tr>
+                            <th>PowerOn/Off</th><td align="center">{{ pwron }} / {{ pwroff }}</td>
+                        </tr>
+                        <tr>
+                            <th>vCPU Count</th><td align="center">{{ cputotal }}</td>
+                        </tr>
+                        <tr>
+                            <th>vCPU/VM Avg</th><td align="center">{{ vcputovm|floatformat:"1"|intcomma }}</td>
+                        </tr>
+                        <tr>
+                            <th>VM Memory (GB)</th><td align="center">{{ memory|floatformat:"1"|intcomma }}</td>
+                        </tr>
+                        <tr>
+                            <th>RAM (GB) / VM Avg</th><td align="center">{{ memorytovm|floatformat:"1"|intcomma }}</td>
+                        </tr>
+                    </tbody>
+                </table>
+</div>

@@ -47,6 +47,31 @@ def show_vdisks(batch):
     return {'vdisks': vdisks, 'capacity': capacity, 'rdmcount': rdmcount, 'thincount': thincount, 'thickcount': thickcount}
 
 
+@register.inclusion_tag('rvt/rvt_vdatastores_tbl.html')
+def show_vdatastores(batch):
+    vdatastores = RVTvDatastore.objects.filter(rvt_vi_batch=batch)
+
+    formula = RVTvDatastore.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vs_capacitymb'))
+    capacitymb = formula['rvt_vs_capacitymb__sum']
+    capacity = capacitymb / 1000 / 1000
+
+    formula = RVTvDatastore.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vs_provisionedmb'))
+    provmb = formula['rvt_vs_provisionedmb__sum']
+    prov = provmb / 1000 / 1000
+
+    formula = RVTvDatastore.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vs_usedmb'))
+    usedmb = formula['rvt_vs_usedmb__sum']
+    used = usedmb / 1000 / 1000
+
+    formula = RVTvDatastore.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vs_freemb'))
+    freemb = formula['rvt_vs_freemb__sum']
+    free = freemb / 1000 / 1000
+
+
+    return {'vdatastores': vdatastores, 'capacity': capacity, 'prov': prov, 'used': used, 'free': free,}
+
+
+
 @register.inclusion_tag('rvt/rvt_vinfo_tbl.html')
 def show_vinfo(batch):
     vinfo = RVTvInfo.objects.filter(rvt_vi_batch=batch)
@@ -66,6 +91,14 @@ def show_vinfo(batch):
     formula = RVTvInfo.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vi_disks'))
     disktotal = formula['rvt_vi_disks__sum']
 
+    formula = RVTvInfo.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vi_cpus'))
+    cputotal = formula['rvt_vi_cpus__sum']
+    vcputovm = cputotal / vinfo.count()
+
+    formula = RVTvInfo.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vi_memory'))
+    memory = formula['rvt_vi_memory__sum']/1000
+    memorytovm = memory / vinfo.count()
+
     return {
         'vinfo': vinfo,
         'unshared': unshared,
@@ -73,7 +106,11 @@ def show_vinfo(batch):
         'prov': prov,
         'pwron': RVTvInfo.objects.filter(rvt_vi_powerstate="poweredOn").count(),
         'pwroff': RVTvInfo.objects.filter(rvt_vi_powerstate="poweredOff").count(),
-        'disktotal': disktotal
+        'disktotal': disktotal,
+        'cputotal': cputotal,
+        'vcputovm': vcputovm,
+        'memory': memory,
+        'memorytovm': memorytovm,
     }
 
 

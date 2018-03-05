@@ -1,45 +1,67 @@
 {% extends "base.html" %}
-{% load crispy_forms_tags %}
 {% load rvt_data_incl %}
 
-
 {% block title %}
-    View CSV Data
+    View RVTOOLS Data
 {% endblock %}
 
 {% block content %}
-    <h2 class="sub-header">VM List (vInfo) For Batch {{ batch }}</h2>
-    <div class="table-responsive">
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th>VM</th>
-                <th>Datacenter</th>
-                <th>Cluster</th>
-                <th>Host</th>
-                <th>Powerstate</th>
-                <th>OS (config)</th>
-                <th>Provisioned MB</th>
-                <th>In Use MB</th>
-                <th>Unshared MB</th>
-            </tr>
-            </thead>
-            <tbody>
-            {% for record in records %}
-            <tr>
-                <td>{{ record.rvt_vi_vm }}</td>
-                <td>{{ record.rvt_vi_datacenter }}</td>
-                <td>{{ record.rvt_vi_cluster }}</td>
-                <td>{{ record.rvt_vi_host }}t</td>
-                <td>{{ record.rvt_vi_powerstate }}</td>
-                <td>{{ record.rvt_vi_os_config }}</td>
-                <td>{{ record.rvt_vi_provisioned_mb }}</td>
-                <td>{{ record.rvt_vi_in_use_mb }}</td>
-                <td>{{ record.rvt_vi_unshared_mb }}</td>
-            </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    <div class="page-header">
+        <h2 class="sub-header">RVTOOLS Summary for {{ onerow.rvt_vi_assessment.assess_org.org_name }}</h2>
+        <div class="container">
+            <b>Uploaded File Name:</b> <i>{{ filename }}</i>
+        </div>
+        <div class="container">
+            Records from batch: {{ batch }}
+        </div>
     </div>
-
+    <div class="well">
+        <h3><b>vInfo Root:</b> {{ vcenter }} (<i>{{ vctype }}</i>)</h3>
+        <div class="container">
+            {% show_vinfo batch %}
+        </div>
+    </div>
 {% endblock %}
+{% block applist %}
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">vDisks</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% show_vdisks batch %}
+                    </div>
+                </div>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">vPartitions</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% show_vpartitions batch %}
+                    </div>
+                </div>
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">vDatastores</h3>
+                    </div>
+                    <div class="panel-body">
+                        {% show_vdatastores batch %}
+                    </div>
+                </div>
+            </div>
+            <div class="col-sm-6">
+                <div class="panel panel-primary">
+                    <div class="panel-heading">
+                        <h3 class="panel-title">vHosts</h3>
+                    </div>
+                    <div class="panel-body">
+                        <i>HOST DATA HERE</i>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+

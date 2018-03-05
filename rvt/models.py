@@ -21,7 +21,8 @@ class RVTvInfo(models.Model):
     rvt_vi_user = models.ForeignKey(User, related_name="rvt_vi_user", default='1', on_delete=models.CASCADE)
     rvt_vi_assessment = models.ForeignKey('org.Assessment', related_name="rvt_vi_assessment", default='1', on_delete=models.CASCADE)
     rvt_vi_batch = models.IntegerField(null=True)
-    rvt_vi_filename = models.CharField(max_length=300, blank=False)
+    rvt_vi_filename = models.CharField(max_length=300, blank=False, default="UNSET")
+    rvt_vi_filename_orig = models.CharField(max_length=300, blank=False, default="UNSET")
 
     rvt_vi_vm = models.CharField(max_length=300, blank=True, null=True)
     rvt_vi_powerstate = models.CharField(max_length=300, default="UNSET")
@@ -44,6 +45,8 @@ class RVTvInfo(models.Model):
     rvt_vi_os_vmtools = models.CharField(max_length=300, default="UNSET")
     rvt_vi_id = models.CharField(max_length=300, blank=True, null=True, default="UNSET")
     rvt_vi_uuid = models.CharField(max_length=300, blank=True, null=True, default="UNSET")
+    rvt_vi_sdkserver = models.CharField(max_length=300, blank=True, null=True, default="UNSET")
+    rvt_vi_sdks_type = models.CharField(max_length=300, blank=True, null=True, default="UNSET")
 
     load_time = models.DateTimeField(auto_now_add=True)
     last_edit = models.DateTimeField(auto_now=True)
@@ -125,7 +128,7 @@ class RVTvDatastore(models.Model):
     rvt_vs_type = models.CharField(max_length=300, default="UNSET")
     rvt_vs_vmcount = models.IntegerField(null=True)
     rvt_vs_capacitymb = models.IntegerField(null=True)
-    rvt_vs_provisioinedmb = models.IntegerField(null=True)
+    rvt_vs_provisionedmb = models.IntegerField(null=True)
     rvt_vs_usedmb = models.IntegerField(null=True)
     rvt_vs_freemb = models.IntegerField(null=True)
 
@@ -133,7 +136,6 @@ class RVTvDatastore(models.Model):
     last_edit = models.DateTimeField(auto_now=True)
 
     objects = RVTvDiskQuerySet.as_manager()
-
 
 
 class RVTvHostQuerySet(models.QuerySet):

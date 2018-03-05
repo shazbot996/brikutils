@@ -78,6 +78,7 @@ def upload(request):
                         rvt_vi_user=request.user,
                         rvt_vi_assessment=linked_assessment,
                         rvt_vi_batch=nextbatch,
+                        rvt_vi_filename_orig=file,
                         rvt_vi_filename=path + file_uuid,
                         rvt_vi_vm=sh.cell(row, header_col_num(hr, "VM")).value,
                         rvt_vi_powerstate=sh.cell(row, header_col_num(hr, "Powerstate")).value,
@@ -100,6 +101,8 @@ def upload(request):
                         rvt_vi_os_vmtools=sh.cell(row, header_col_num(hr, "OS according to the VMware Tools")).value,
                         rvt_vi_id=sh.cell(row, header_col_num(hr, "VM ID")).value,
                         rvt_vi_uuid=sh.cell(row, header_col_num(hr, "VM UUID")).value,
+                        rvt_vi_sdkserver=sh.cell(row, header_col_num(hr, "VI SDK Server")).value,
+                        rvt_vi_sdks_type=sh.cell(row, header_col_num(hr, "VI SDK Server type")).value,
                     )
                     vinfo_table = saverecord.save()
                 count = count + 1
@@ -200,7 +203,7 @@ def build_rvt_tables(request, wb, nextbatch):
                         rvt_vs_type=sh.cell(row, type_col).value,
                         rvt_vs_vmcount=sh.cell(row, vmcount_col).value,
                         rvt_vs_capacitymb=sh.cell(row, cap_col).value,
-                        rvt_vs_provisioinedmb=sh.cell(row, prov_col).value,
+                        rvt_vs_provisionedmb=sh.cell(row, prov_col).value,
                         rvt_vs_usedmb=sh.cell(row, used_col).value,
                         rvt_vs_freemb=sh.cell(row, fre_col).value,
                     )
@@ -299,20 +302,20 @@ def handle_uploaded_file(f, p):
 @login_required
 def viewrvt(request, batchfilter=0):
 
-    my_records = RVTvInfo.objects.records_for_user(request.user)
-
     if batchfilter == 0:
         my_batches = RVTvInfo.objects.batches(request.user)
         return render(request, "rvt/rvt_rvtbatchview.html",
-                      {'records': my_records, 'batches': my_batches})
+                      {'batches': my_batches})
 
     else:
         my_records = RVTvInfo.objects.records_for_batch(request.user, batchfilter)
-        my_vdisks = RVTvDisk.objects.records_for_batch(request.user, batchfilter)
-
-        message = "%s %s" % ("Showing Data for Batch ", batchfilter)
+        onerow = my_records.all()[:1].get()
+        vcenter = onerow.rvt_vi_sdkserver
+        vctype = onerow.rvt_vi_sdks_type
+        filename = onerow.rvt_vi_filename_orig
         return render(request, "rvt/rvt_rvtdataview.html",
-                      {'records': my_records, 'batch': batchfilter, 'message': message, 'vdisks': my_vdisks})
+                      {'batch': batchfilter, 'vcenter': vcenter, 'vctype': vctype, 'filename': filename, 'onerow': onerow}
+                      )
 
 
 def delrvt(request, batchid):

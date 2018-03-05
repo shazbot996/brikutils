@@ -1,0 +1,28 @@
+<!--Separate Include for sub-table view of vdisks -->
+{% load humanize %}
+<table class="table table-bordered table-striped">
+    <tbody>
+        <tr>
+            <th></th>
+            <th>Count</th>
+            <th>Allocated TB</th>
+            <th>Used TB</th>
+            <th>Free TB</th>
+        </tr>
+        <tr>
+            <td><B>vDatastores:</B></td>
+            <td>
+                {{ vdatastores.count }}
+            </td>
+            <td>
+                {{ capacity|floatformat:"1"|intcomma }}
+            </td>
+            <td>
+                {{ used|floatformat:"1"|intcomma }}
+            </td>
+            <td>
+                {{ free|floatformat:"1"|intcomma }}
+            </td>
+        </tr>
+    </tbody>
+</table>
