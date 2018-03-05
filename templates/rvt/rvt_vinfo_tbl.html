@@ -1,0 +1,30 @@
+<!--Separate Include for sub-table view of vdisks -->
+{% load humanize %}
+<table class="table table-bordered table-striped">
+    <tbody>
+    {% if vinfo %}
+        <tr>
+            <th></th>
+            <th>vDisks</th>
+            <th>Powerstate On/Off</th>
+            <th>Unshared TB</th>
+            <th>In-Use TB</th>
+            <th>Provisioned TB</th>
+            <th>Disk Count</th>
+        </tr>
+        <tr>
+            <td><b>vInfo</b></td>
+            <td>{{ vinfo.count }}</td>
+            <td>{{ pwron }} / {{ pwroff }}</td>
+            <td>{{ unshared|floatformat:"1"|intcomma }}</td>
+            <td>{{ used|floatformat:"1"|intcomma }}</td>
+            <td>{{ prov|floatformat:"1"|intcomma }}</td>
+            <td>{{ disktotal }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td>None Yet Created</td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>

@@ -1,0 +1,28 @@
+<!--Separate Include for sub-table view of vdisks -->
+{% load humanize %}
+<table class="table">
+    <tbody>
+        <tr>
+    {% if vinfo %}
+            <td><b><u>{{ vinfo.count }}</u></b> VMs</td>
+            <td><b><u>{{ used|floatformat:"1"|intcomma }}</u></b> TB In Use (<i>vInfo</i>)</td>
+    {% else %}
+            <td colspan="2">None Found</td>
+    {% endif %}
+
+    {% if vpart %}
+            <td><b><u>{{ vpart.count }}</u></b> Partitions</td>
+            <td><b><u>{{ consumed|floatformat:"1"|intcomma }}</u></b> TB In Use (<i>Partition</i>) </td>
+    {% else %}
+            <td colspan="2">None Found</td>
+    {% endif %}
+
+    {% if vdisks %}
+            <td><b><u>{{ vdisks.count }}</u></b> vDisks</td>
+            <td>(<b><u>{{ rdmcount }}</u></b> RDMs)</td>
+    {% else %}
+            <td colspan="2">None Found</td>
+    {% endif %}
+        </tr>
+    </tbody>
+</table>

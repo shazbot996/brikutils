@@ -1,5 +1,7 @@
 {% extends "base.html" %}
 {% load crispy_forms_tags %}
+{% load rvt_data_incl %}
+
 
 {% block title %}
     View CSV Data
@@ -12,20 +14,26 @@
             <thead>
             <tr>
                 <th>VM</th>
+                <th>Datacenter</th>
+                <th>Cluster</th>
+                <th>Host</th>
                 <th>Powerstate</th>
-                <th>Guest State</th>
-                <th>Prov</th>
-                <th>In USe</th>
-                <th>Ushared</th>
+                <th>OS (config)</th>
+                <th>Provisioned MB</th>
+                <th>In Use MB</th>
+                <th>Unshared MB</th>
             </tr>
             </thead>
             <tbody>
             {% for record in records %}
             <tr>
                 <td>{{ record.rvt_vi_vm }}</td>
+                <td>{{ record.rvt_vi_datacenter }}</td>
+                <td>{{ record.rvt_vi_cluster }}</td>
+                <td>{{ record.rvt_vi_host }}t</td>
                 <td>{{ record.rvt_vi_powerstate }}</td>
-                <td>{{ record.rvt_vi_guest_state }}</td>
-                <td>{{ record.rvt_vi_provisioned_mb }}t</td>
+                <td>{{ record.rvt_vi_os_config }}</td>
+                <td>{{ record.rvt_vi_provisioned_mb }}</td>
                 <td>{{ record.rvt_vi_in_use_mb }}</td>
                 <td>{{ record.rvt_vi_unshared_mb }}</td>
             </tr>

@@ -1,0 +1,34 @@
+<!--Separate Include for sub-table view of vdisks -->
+{% load humanize %}
+<table class="table table-bordered table-striped">
+    <tbody>
+    {% if vpart %}
+        <tr>
+            <th></th>
+            <th>Partition Count</th>
+            <th>Capacity TB</th>
+            <th>Consumed TB</th>
+            <th>Free TB</th>
+        </tr>
+        <tr>
+            <td><B>vPartitions:</B></td>
+            <td>
+                {{ vpart.count }}
+            </td>
+            <td>
+                {{ capacity|floatformat:"1"|intcomma }}
+            </td>
+            <td>
+                {{ consumed|floatformat:"1"|intcomma }}
+            </td>
+            <td>
+                {{ free|floatformat:"1"|intcomma }}
+            </td>
+        </tr>
+    {% else %}
+        <tr>
+            <td>None Yet Created</td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>
