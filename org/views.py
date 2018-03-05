@@ -93,8 +93,12 @@ def assess_add(request):
 def assess_view(request, record):
     #  prepare our matching org object
     thisassessment = Assessment.objects.get(pk=record)
-    batches = RVTvInfo.objects.values_list('rvt_vi_batch', flat=True).distinct()
-    return render(request, "org/assessment_view.html", {'thisassessment': thisassessment, 'batches': batches})
+    #  allbatches = RVTvInfo.objects.values_list('rvt_vi_batch', flat=True).distinct()
+    #  allbatches = RVTvInfo.objects.filter(rvt_vi_assessment=record)
+    #  allbatches = RVTvInfo.objects.filter(rvt_vi_assessment=thisassessment).values("rvt_vi_batch").distinct()
+    batches = RVTvInfo.objects.filter(rvt_vi_assessment=record).distinct('rvt_vi_batch')
+    countbatches = batches.count()
+    return render(request, "org/assessment_view.html", {'thisassessment': thisassessment, 'batches': batches, 'countbatches': countbatches})
 
 
 class MyAssessList(ListView):

@@ -51,10 +51,12 @@
     <div class="well">
         <h3><b>Data Sets</b></h3>
     <div class="container">
-        <h4><b>RVTOOLS</b></h4>
+        <h4><b>{{ countbatches }} RVTOOLS Data Set(s)</b></h4>
+
     {% if batches %}
         {% for batch in batches %}
-            {% show_vinfo batch %}
+            <h4>Batch Number {{ batch.rvt_vi_batch }}</h4>
+            {% show_vinfo batch.rvt_vi_batch %}
         {% endfor %}
     {% else %}
         <i>None Uploaded</i>

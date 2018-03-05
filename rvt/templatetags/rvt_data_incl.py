@@ -114,6 +114,41 @@ def show_vinfo(batch):
     }
 
 
+@register.inclusion_tag('rvt/rvt_vhosts_tbl.html')
+def show_vhosts(batch):
+    vhosts = RVTvHost.objects.filter(rvt_vi_batch=batch)
+
+    formula = RVTvHost.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vh_socketcount'))
+    totalsockets = formula['rvt_vh_socketcount__sum']
+
+    formula = RVTvHost.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vh_socketcores'))
+    totalcores = formula['rvt_vh_socketcores__sum']
+
+    formula = RVTvInfo.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vi_cpus'))
+    cputotal = formula['rvt_vi_cpus__sum']
+    vcputopcore = cputotal / totalcores
+
+    formula = RVTvHost.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vh_memorymb'))
+    memorymb = formula['rvt_vh_memorymb__sum']/1000
+
+    formula = RVTvHost.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vh_vram'))
+    vrammb = formula['rvt_vh_vram__sum']/1000
+
+    formula = RVTvHost.objects.filter(rvt_vi_batch=batch).aggregate(Sum('rvt_vh_usedmem'))
+    vmumb = formula['rvt_vh_usedmem__sum']/1000
+
+    return {
+        'vhosts': vhosts,
+        'totalsockets': totalsockets,
+        'totalcores': totalcores,
+        'cputotal': cputotal,
+        'vcputopcore': vcputopcore,
+        'memorymb': memorymb,
+        'vrammb': vrammb,
+        'vmumb': vmumb,
+    }
+
+
 @register.inclusion_tag('rvt/rvt_brief_tbl.html')
 def show_brief(batch):
     vinfo = RVTvInfo.objects.filter(rvt_vi_batch=batch)

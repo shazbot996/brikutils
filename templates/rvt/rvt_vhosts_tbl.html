@@ -1,0 +1,33 @@
+<!--Separate Include for sub-table view of vdisks -->
+{% load humanize %}
+<table class="table table-bordered table-striped">
+    <tbody>
+    {% if vhosts %}
+        <tr>
+            <th>Hosts</th><td align="center">{{ vhosts.count }}</td>
+        </tr>
+        <tr>
+            <th>Total CPU Sockets</th><td align="center">{{ totalsockets }}</td>
+        </tr>
+        <tr>
+            <th>Total CPU Cores</th><td align="center">{{ totalcores }}</td>
+        </tr>
+        <tr>
+            <th>vCPU:Core Ratio</th><td align="center">{{ vcputopcore|floatformat:"1"|intcomma }}:1</td>
+        </tr>
+        <tr>
+            <th>Total Memory</th><td align="center">{{ memorymb|floatformat:"1"|intcomma }}</td>
+        </tr>
+        <tr>
+            <th>vRAM</th><td align="center">{{ vrammb|floatformat:"1"|intcomma }}</td>
+        </tr>
+        <tr>
+            <th>VM Used Memory</th><td align="center">{{ vmumb|floatformat:"1"|intcomma }}</td>
+        </tr>
+    {% else %}
+        <tr>
+            <td>None Yet Created</td>
+        </tr>
+    {% endif %}
+    </tbody>
+</table>

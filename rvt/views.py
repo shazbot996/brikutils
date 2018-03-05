@@ -49,13 +49,9 @@ def upload(request):
             #  init the file read - XLS focused here
             wb = xlrd.open_workbook(path + file_uuid)
             sNames = wb.sheet_names()
-            testvar = False
-            for sname in sNames:
-                if sname == 'vinfo':
-                    testvar = True
-
-            if testvar == True:
+            if 'vInfo' in sNames:
                 sh = wb.sheet_by_name('vInfo')
+
             else:
                 sh = wb.sheet_by_name('tabvInfo')
 
@@ -154,16 +150,12 @@ def upload(request):
 def build_rvt_tables(request, wb, nextbatch):
     #  Have to match old workbook names and new - treat them same below
     sNames = wb.sheet_names()
-    testvar = False
-    for sname in sNames:
-        if sname == 'vinfo':
-            testvar = True
-
-    if testvar == True:
+    if 'vInfo' in sNames:
         worksheets = ['vDisk', 'vPartition', 'vHost', 'vDatastore']
-    else:
-        worksheets = ['tabvDisk', 'tabvPartition', 'tabvHost', 'tabvDatastore']
 
+    else:
+        sh = wb.sheet_by_name('tabvInfo')
+        worksheets = ['tabvDisk', 'tabvPartition', 'tabvHost', 'tabvDatastore']
 
     for sht in worksheets:
         count = 0
