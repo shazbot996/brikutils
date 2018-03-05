@@ -9,14 +9,33 @@
     <div class="page-header">
         <h2 class="sub-header">RVTOOLS Summary for {{ onerow.rvt_vi_assessment.assess_org.org_name }}</h2>
         <div class="container">
-            <b>Uploaded File Name:</b> <i>{{ filename }}</i>
-        </div>
-        <div class="container">
-            Records from batch: {{ batch }}
+            <div class="col-sm-8">
+                <div class="container">
+                    <b>Uploaded File Name:</b> <i>{{ filename }}</i>
+                </div>
+                <div class="container">
+                    Records from batch: {{ batch }}
+                </div>
+            </div>
+            <div class="col-sm-4">
+                <table width="180">
+                    <tr>
+                        <td><form method="get" action="/org/assessment/view/{{ onerow.rvt_vi_assessment.id }}/"><button class="btn btn-xs btn-primary" type="submit">Assessment Page</button></form></td>
+                        <td><form method="get" action="/rvt/delete/{{ batch }}/"><button class="btn btn-xs btn-danger" type="submit">Delete</button></form></td>
+                    </tr>
+                </table>
+            </div>
         </div>
     </div>
     <div class="well">
-        <h3><b>vInfo Root:</b> {{ vcenter }} (<i>{{ vctype }}</i>)</h3>
+        <h3><b>vInfo Root:</b>
+            {% if vcenter == "UNSET" or vcenter == "OLD FORMAT DID NOT STORE THIS FIELD" %}
+            Top Level
+            {% else %}
+            {{ vcenter }}
+            (<i>{{ vctype }}</i>)
+            {% endif %}
+        </h3>
         <div class="container">
             {% show_vinfo batch %}
         </div>

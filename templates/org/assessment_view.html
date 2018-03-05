@@ -1,4 +1,5 @@
 {% extends "base.html" %}
+{% load rvt_data_incl %}
 
 {% block title %}
     Assessment Details
@@ -46,5 +47,18 @@
             </div>
           </div>
         </div>
-    </div
+    </div>
+    <div class="well">
+        <h3><b>Data Sets</b></h3>
+    <div class="container">
+        <h4><b>RVTOOLS</b></h4>
+    {% if batches %}
+        {% for batch in batches %}
+            {% show_vinfo batch %}
+        {% endfor %}
+    {% else %}
+        <i>None Uploaded</i>
+    {% endif %}
+    </div>
+    </div>
 {% endblock %}

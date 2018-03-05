@@ -38,8 +38,8 @@ def upload(request):
         file = request.FILES['file']
         form = UploadFileForm(request.POST, request.FILES)
         if form.is_valid():
-            if not file.name.endswith('.xlsx'):
-                messages.error(request, 'File is not XLSX type')
+            if not file.name.endswith('.xlsx') and not file.name.endswith('.xls'):
+                messages.error(request, 'File is not XLSX or XLS type')
                 return redirect('rvt_view')
 
             #  Where are we keeping our files?  @TODO update to model-based
@@ -48,7 +48,16 @@ def upload(request):
 
             #  init the file read - XLS focused here
             wb = xlrd.open_workbook(path + file_uuid)
-            sh = wb.sheet_by_name('vInfo')
+            sNames = wb.sheet_names()
+            testvar = False
+            for sname in sNames:
+                if sname == 'vinfo':
+                    testvar = True
+
+            if testvar == True:
+                sh = wb.sheet_by_name('vInfo')
+            else:
+                sh = wb.sheet_by_name('tabvInfo')
 
             #  We're tracking each unique table as a "batch".
             #  let's look up our highest batch number & increment to the next when we save the record
@@ -74,14 +83,29 @@ def upload(request):
                             pass
 
                 else:
+                    if header_col_num(hr, "VI SDK Server") == 0:
+                        rvt_vi_sdkserver_data = "UNSET"
+                        rvt_vi_sdks_type_data = "UNSET"
+                    else:
+                        rvt_vi_sdkserver_data = sh.cell(row, header_col_num(hr, "VI SDK Server")).value
+                        rvt_vi_sdks_type_data = sh.cell(row, header_col_num(hr, "VI SDK Server type")).value
+
+                    if header_col_num(hr, "HW version") == 0:
+                        rvt_vi_hwversion_data = 0
+                    else:
+                        rvt_vi_hwversion_data = sh.cell(row, header_col_num(hr, "HW version")).value
+
+                    rvt_vi_vm_data = sh.cell(row, header_col_num(hr, "VM")).value
+                    rvt_vi_powerstate_data = sh.cell(row, header_col_num(hr, "Powerstate")).value
+
                     saverecord = RVTvInfo(
                         rvt_vi_user=request.user,
                         rvt_vi_assessment=linked_assessment,
                         rvt_vi_batch=nextbatch,
                         rvt_vi_filename_orig=file,
                         rvt_vi_filename=path + file_uuid,
-                        rvt_vi_vm=sh.cell(row, header_col_num(hr, "VM")).value,
-                        rvt_vi_powerstate=sh.cell(row, header_col_num(hr, "Powerstate")).value,
+                        rvt_vi_vm=rvt_vi_vm_data,
+                        rvt_vi_powerstate=rvt_vi_powerstate_data,
                         rvt_vi_dnsname=sh.cell(row, header_col_num(hr, "DNS Name")).value,
                         rvt_vi_cpus=sh.cell(row, header_col_num(hr, "CPUs")).value,
                         rvt_vi_memory=sh.cell(row, header_col_num(hr, "Memory")).value,
@@ -92,17 +116,18 @@ def upload(request):
                         rvt_vi_provisioned_mb=sh.cell(row, header_col_num(hr, "Provisioned MB")).value,
                         rvt_vi_in_use_mb=sh.cell(row, header_col_num(hr, "In Use MB")).value,
                         rvt_vi_unshared_mb=sh.cell(row, header_col_num(hr, "Unshared MB")).value,
-                        rvt_vi_hwversion = sh.cell(row, header_col_num(hr, "HW version")).value,
+                        rvt_vi_hwversion = rvt_vi_hwversion_data,
                         rvt_vi_path=sh.cell(row, header_col_num(hr, "Path")).value,
                         rvt_vi_datacenter=sh.cell(row, header_col_num(hr, "Datacenter")).value,
                         rvt_vi_cluster=sh.cell(row, header_col_num(hr, "Cluster")).value,
                         rvt_vi_host=sh.cell(row, header_col_num(hr, "Host")).value,
-                        rvt_vi_os_config=sh.cell(row, header_col_num(hr, "OS according to the configuration file")).value,
-                        rvt_vi_os_vmtools=sh.cell(row, header_col_num(hr, "OS according to the VMware Tools")).value,
+                        rvt_vi_os_config=rvt_vi_sdkserver_data,
+                        rvt_vi_os_vmtools=rvt_vi_sdks_type_data,
                         rvt_vi_id=sh.cell(row, header_col_num(hr, "VM ID")).value,
                         rvt_vi_uuid=sh.cell(row, header_col_num(hr, "VM UUID")).value,
-                        rvt_vi_sdkserver=sh.cell(row, header_col_num(hr, "VI SDK Server")).value,
-                        rvt_vi_sdks_type=sh.cell(row, header_col_num(hr, "VI SDK Server type")).value,
+                        rvt_vi_sdkserver = rvt_vi_sdkserver_data,
+                        rvt_vi_sdks_type = rvt_vi_sdks_type_data,
+
                     )
                     vinfo_table = saverecord.save()
                 count = count + 1
@@ -127,11 +152,26 @@ def upload(request):
 
 
 def build_rvt_tables(request, wb, nextbatch):
-    worksheets = ['vDisk', 'vPartition', 'vHost', 'vDatastore']
+    #  Have to match old workbook names and new - treat them same below
+    sNames = wb.sheet_names()
+    testvar = False
+    for sname in sNames:
+        if sname == 'vinfo':
+            testvar = True
+
+    if testvar == True:
+        worksheets = ['vDisk', 'vPartition', 'vHost', 'vDatastore']
+    else:
+        worksheets = ['tabvDisk', 'tabvPartition', 'tabvHost', 'tabvDatastore']
+
 
     for sht in worksheets:
         count = 0
-        sh = wb.sheet_by_name(sht)
+        try:
+            sh = wb.sheet_by_name(sht)
+        except:
+            pass
+
         for row in range(sh.nrows):
             if count == 0:
                 #  grab the header row for top 100 columns
@@ -143,37 +183,58 @@ def build_rvt_tables(request, wb, nextbatch):
                         pass
 
             else:
-                if sht == "vDisk":
+                if sht == "vDisk" or sht == "tabvDisk":
                     vmid_col = header_col_num(hr, "VM ID")
+                    vmid_col_value = sh.cell(row, vmid_col).value
                     disk_col = header_col_num(hr, "Disk")
+                    disk_col_value = sh.cell(row, disk_col).value
                     cap_col = header_col_num(hr, "Capacity MB")
+                    cap_col_value = sh.cell(row, cap_col).value
                     dskm_col = header_col_num(hr, "Disk Mode")
+                    dskm_col_value = sh.cell(row, dskm_col).value
                     thn_col = header_col_num(hr, "Thin")
+                    thn_col_value = sh.cell(row, thn_col).value
+                    thn_col_bool = str_to_bool(thn_col_value)
                     ctl_col = header_col_num(hr, "Controller")
+                    ctl_col_value = sh.cell(row, ctl_col).value
                     pth_col = header_col_num(hr, "Path")
+                    pth_col_value = sh.cell(row, pth_col).value
                     ano_col = header_col_num(hr, "Annotation")
+                    ano_col_value = sh.cell(row, ano_col).value
+                    ano_col_value_short = (ano_col_value[:298] + '..') if len(ano_col_value) > 300 else ano_col_value
 
                     saverecord = RVTvDisk(
                         rvt_vd_user=request.user,
                         rvt_vi_batch=nextbatch,
-                        rvt_vd_vmid=sh.cell(row, vmid_col).value,
-                        rvt_vd_disk=sh.cell(row, disk_col).value,
-                        rvt_vd_capacitymb=sh.cell(row, cap_col).value,
-                        rvt_vd_diskmode=sh.cell(row, dskm_col).value,
-                        rvt_vd_thin=str_to_bool(sh.cell(row, thn_col).value),
-                        rvt_vd_controller=sh.cell(row, ctl_col).value,
-                        rvt_vd_path=sh.cell(row, pth_col).value,
-                        rvt_vd_annotation=sh.cell(row, ano_col).value,
+                        rvt_vd_vmid=vmid_col_value,
+                        rvt_vd_disk=disk_col_value,
+                        rvt_vd_capacitymb=cap_col_value,
+                        rvt_vd_diskmode=dskm_col_value,
+                        rvt_vd_thin=thn_col_bool,
+                        rvt_vd_controller=ctl_col_value,
+                        rvt_vd_path=pth_col_value,
+                        rvt_vd_annotation=ano_col_value_short,
                     )
                     saverecord.save()
 
-                elif sht == "vPartition":
+                elif sht == "vPartition" or sht == "tabvPartition":
                     vmid_col = header_col_num(hr, "VM ID")
                     disk_col = header_col_num(hr, "Disk")
                     cap_col = header_col_num(hr, "Capacity MB")
-                    con_col = header_col_num(hr, "Consumed MB")
+                    cap_col_value = sh.cell(row, cap_col).value
                     fre_col = header_col_num(hr, "Free MB")
+                    fre_col_value = sh.cell(row, fre_col).value
+
                     ano_col = header_col_num(hr, "Annotation")
+                    ano_col_value = sh.cell(row, ano_col).value
+                    ano_col_value_short = (ano_col_value[:298] + '..') if len(ano_col_value) > 300 else ano_col_value
+
+                    #  Old versions do NOT have this
+                    con_col = header_col_num(hr, "Consumed MB")
+                    if con_col == None:
+                        con_col_value = cap_col_value - fre_col_value
+                    else:
+                        con_col_value = sh.cell(row, con_col).value
 
                     saverecord = RVTvPartition(
                         rvt_vp_user=request.user,
@@ -181,13 +242,13 @@ def build_rvt_tables(request, wb, nextbatch):
                         rvt_vp_vmid=sh.cell(row, vmid_col).value,
                         rvt_vp_disk=sh.cell(row, disk_col).value,
                         rvt_vp_capacitymb=sh.cell(row, cap_col).value,
-                        rvt_vp_consumedmb=sh.cell(row, con_col).value,
+                        rvt_vp_consumedmb=con_col_value,
                         rvt_vp_freemb=sh.cell(row, fre_col).value,
-                        rvt_vp_annotation=sh.cell(row, ano_col).value,
+                        rvt_vp_annotation=ano_col_value_short,
                     )
                     saverecord.save()
 
-                elif sht == "vDatastore":
+                elif sht == "vDatastore" or sht == "tabvDatastore":
                     name_col = header_col_num(hr, "Name")
                     type_col = header_col_num(hr, "Type")
                     vmcount_col = header_col_num(hr, "# VMs")
@@ -209,7 +270,7 @@ def build_rvt_tables(request, wb, nextbatch):
                     )
                     saverecord.save()
 
-                elif sht == "vHost":
+                elif sht == "vHost" or sht == "tabvHost":
                     host_col = header_col_num(hr, "Host")
                     dc_col = header_col_num(hr, "Datacenter")
                     clstr_col = header_col_num(hr, "Cluster")
@@ -268,6 +329,42 @@ def build_rvt_tables(request, wb, nextbatch):
     return "Additional Tables, Processing Complete. "
 
 def header_col_num(hr, srchstring):
+    #  Compatibility String Replacements Here!
+    if srchstring == "OS according to the configuration file" or srchstring == "OS according to the VMware Tools":
+        for cell in hr:
+            if "OS" == cell:
+                srchstring = "OS"
+
+    if srchstring == "VM ID":
+        testvar = False
+        for cell in hr:
+            if "Object ID" == cell:
+                srchstring = "Object ID"
+                testvar = True
+            elif "VM ID" == cell:
+                testvar = True
+
+        if testvar == False:
+            return 0
+
+    if srchstring == "VM UUID":
+        for cell in hr:
+            if "UUID" == cell:
+                srchstring = "UUID"
+
+    #  These don't exist in older workbook formats:
+    if srchstring == "VI SDK Server":
+        if srchstring not in hr:
+            return 0
+
+    if srchstring == "VI SDK Server type":
+        if srchstring not in hr:
+            return 0
+
+    if srchstring == "HW version":
+        if srchstring not in hr:
+            return 0
+
     count = 0
     for cell in hr:
         if srchstring == cell:
@@ -277,9 +374,11 @@ def header_col_num(hr, srchstring):
 
 
 def str_to_bool(s):
-    if s == 'True':
+    if s.lower() == 'true':
          return True
-    elif s == 'False':
+    elif s.lower() == 'false':
+         return False
+    elif s.lower() == '':
          return False
     else:
          raise ValueError
@@ -334,6 +433,19 @@ def delrvt(request, batchid):
         file = test.rvt_vi_filename
         os.remove(file)
         my_records.delete()
+
+        my_records = RVTvDisk.objects.records_for_batch(request.user, batchid)
+        my_records.delete()
+
+        my_records = RVTvPartition.objects.records_for_batch(request.user, batchid)
+        my_records.delete()
+
+        my_records = RVTvDatastore.objects.records_for_batch(request.user, batchid)
+        my_records.delete()
+
+        my_records = RVTvHost.objects.records_for_batch(request.user, batchid)
+        my_records.delete()
+
         return redirect('rvt_view')
 
 

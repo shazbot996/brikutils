@@ -12,6 +12,7 @@ from django.urls import reverse_lazy
 from .forms import OrgAddForm, AssessAddForm
 from django.db.models import Avg, Max, Min, Sum
 from .models import Org, Assessment
+from rvt.models import RVTvInfo
 
 @login_required
 def index(request):
@@ -92,8 +93,8 @@ def assess_add(request):
 def assess_view(request, record):
     #  prepare our matching org object
     thisassessment = Assessment.objects.get(pk=record)
-
-    return render(request, "org/assessment_view.html", {'thisassessment': thisassessment})
+    batches = RVTvInfo.objects.values_list('rvt_vi_batch', flat=True).distinct()
+    return render(request, "org/assessment_view.html", {'thisassessment': thisassessment, 'batches': batches})
 
 
 class MyAssessList(ListView):

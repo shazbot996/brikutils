@@ -1,44 +1,44 @@
 <!--Separate Include for sub-table view of vdisks -->
 {% load humanize %}
-<div class="col-sm-5">
-                <table class="table table-bordered table-striped">
-                    <tbody>
-                        <tr>
-                            <th>VM Count</th><td align="center">{{ vinfo.count }}</td>
-                        </tr>
-                        <tr>
-                            <th>In-Use TB</th><td align="center">{{ used|floatformat:"1"|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <th>Unshared TB</th><td align="center">{{ unshared|floatformat:"1"|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <th>Provisioned TB</th><td align="center">{{ prov|floatformat:"1"|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <th>Disk Count</th><td align="center">{{ disktotal }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-</div>
-<div class="col-sm-6">
-                <table class="table table-bordered table-striped">
-                    <tbody>
-                        <tr>
-                            <th>PowerOn/Off</th><td align="center">{{ pwron }} / {{ pwroff }}</td>
-                        </tr>
-                        <tr>
-                            <th>vCPU Count</th><td align="center">{{ cputotal }}</td>
-                        </tr>
-                        <tr>
-                            <th>vCPU/VM Avg</th><td align="center">{{ vcputovm|floatformat:"1"|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <th>VM Memory (GB)</th><td align="center">{{ memory|floatformat:"1"|intcomma }}</td>
-                        </tr>
-                        <tr>
-                            <th>RAM (GB) / VM Avg</th><td align="center">{{ memorytovm|floatformat:"1"|intcomma }}</td>
-                        </tr>
-                    </tbody>
-                </table>
-</div>
+    <div class="col-sm-5">
+        <table class="table table-bordered table-striped">
+            <tbody>
+            <tr>
+                <th>VM Count</th><td align="center">{{ vinfo.count }}</td>
+            </tr>
+            <tr>
+                <th>In-Use TB</th><td align="center">{{ used|floatformat:"1"|intcomma }}</td>
+            </tr>
+            <tr>
+                <th>Unshared TB</th><td align="center">{{ unshared|floatformat:"1"|intcomma }}</td>
+            </tr>
+            <tr>
+                <th>Provisioned TB</th><td align="center">{{ prov|floatformat:"1"|intcomma }}</td>
+            </tr>
+            <tr>
+                <th>Disk Count</th><td align="center">{{ disktotal }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="col-sm-6">
+        <table class="table table-bordered table-striped">
+            <tbody>
+            <tr>
+                <th>PowerOn/Off</th><td align="center">{{ pwron }} / {{ pwroff }}</td>
+            </tr>
+            <tr>
+                <th>vCPU Count</th><td align="center">{{ cputotal }}</td>
+            </tr>
+            <tr>
+                <th>vCPU/VM Avg</th><td align="center">{{ vcputovm|floatformat:"1"|intcomma }}</td>
+            </tr>
+            <tr>
+                <th>VM Memory (GB)</th><td align="center">{{ memory|floatformat:"1"|intcomma }}</td>
+            </tr>
+            <tr>
+                <th>RAM (GB) / VM Avg</th><td align="center">{{ memorytovm|floatformat:"1"|intcomma }}</td>
+            </tr>
+            </tbody>
+        </table>
+    </div>

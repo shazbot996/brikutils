@@ -29,7 +29,7 @@
             {% if org_list %}
                 {% for org in org_list %}
                     <tr>
-                        <td><b>{{ org.org_name }}</b></td>
+                        <td><b><a href="/org/view/{{ org.id }}/">{{ org.org_name }}</a></b></td>
                         <td>{{org.org_contact}}</td>
                         <td><i>{{ org.load_time }}</i></td>
                         <td>

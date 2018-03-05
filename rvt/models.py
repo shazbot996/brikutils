@@ -107,7 +107,7 @@ class RVTvPartition(models.Model):
     load_time = models.DateTimeField(auto_now_add=True)
     last_edit = models.DateTimeField(auto_now=True)
 
-    objects = RVTvDiskQuerySet.as_manager()
+    objects = RVTvPartitionQuerySet.as_manager()
 
 
 class RVTvDatastoreQuerySet(models.QuerySet):
@@ -135,7 +135,7 @@ class RVTvDatastore(models.Model):
     load_time = models.DateTimeField(auto_now_add=True)
     last_edit = models.DateTimeField(auto_now=True)
 
-    objects = RVTvDiskQuerySet.as_manager()
+    objects = RVTvDatastoreQuerySet.as_manager()
 
 
 class RVTvHostQuerySet(models.QuerySet):
@@ -180,4 +180,4 @@ class RVTvHost(models.Model):
     load_time = models.DateTimeField(auto_now_add=True)
     last_edit = models.DateTimeField(auto_now=True)
 
-    objects = RVTvDiskQuerySet.as_manager()
+    objects = RVTvHostQuerySet.as_manager()

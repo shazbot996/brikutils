@@ -37,8 +37,8 @@
                         <td><b><a href="/org/view/{{ batch.rvt_vi_assessment.assess_org.id }}/">{{ batch.rvt_vi_assessment.assess_org.org_name }}</a></b></td>
                         <td><b><a href="/org/assessment/view/{{ batch.rvt_vi_assessment.id }}/">{{ batch.rvt_vi_assessment.assess_name }}</b></td>
                         <td>{{ batch.rvt_vi_batch }}</td>
-                        <td>{{ batch.rvt_vi_filename }}</td>
-                        <td><i>{{ batch.load_vi_time }}</i></td>
+                        <td>{{ batch.rvt_vi_filename_orig }}</td>
+                        <td><i>{{ batch.load_time }}</i></td>
                         <td>
                             <form method="get" action="/rvt/viewrvt/{{ batch.rvt_vi_batch }}/">
                                 <button type="submit" class="btn btn-xs btn-success">View</button>
