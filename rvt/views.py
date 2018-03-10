@@ -3,6 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django import template
 
+from app.fusioncharts import FusionCharts
 from django.views.generic import DeleteView, UpdateView, ListView
 from django.urls import reverse_lazy
 
@@ -22,6 +23,65 @@ from io import TextIOWrapper
 def index(request):
     message = "Welcome Registered User (RVTOOLS)"
     return render(request, "rvt/rvt_index.html", {'message': message})
+
+
+@login_required
+def viewrvt(request, batchfilter=0):
+
+    if batchfilter == 0:
+        my_batches = RVTvInfo.objects.batches(request.user)
+        return render(request, "rvt/rvt_rvtbatchview.html",
+                      {'batches': my_batches})
+
+    else:
+        my_records = RVTvInfo.objects.records_for_batch(request.user, batchfilter).order_by('-rvt_vi_unshared_mb')
+        vmcount = my_records.count()
+        onerow = my_records.all()[:1].get()
+        vcenter = onerow.rvt_vi_sdkserver
+        vctype = onerow.rvt_vi_sdks_type
+        filename = onerow.rvt_vi_filename_orig
+        vmchart = vmFusionChart(my_records)
+        return render(request, "rvt/rvt_rvtdataview.html",
+                      {'batch': batchfilter, 'vcenter': vcenter, 'vctype': vctype, 'filename': filename, 'onerow': onerow, 'vmchart': vmchart, 'vmcount': vmcount}
+                      )
+
+
+def vmFusionChart(vm_records):
+    # Syntax for the constructor - FusionCharts("type of chart", "unique chart id", "width of chart", "height of chart", "div id to render the chart", "type of data", "actual data")
+
+    # Chart data is passed to the `dataSource` parameter, as dict, in the form of key-value pairs.
+    dataSource = {}
+    # setting chart cosmetics
+    dataSource['chart'] = {
+        "caption": "VM List by Unshared MB",
+        "paletteColors": "#0075c2",
+        "bgColor": "#ffffff",
+        "borderAlpha": "20",
+        "canvasBorderAlpha": "0",
+        "usePlotGradientColor": "0",
+        "plotBorderAlpha": "10",
+        "showXAxisLine": "1",
+        "xAxisLineColor": "#999999",
+        "showValues": "0",
+        "divlineColor": "#999999",
+        "divLineIsDashed": "1",
+        "showAlternateHGridColor": "0"
+    }
+
+    dataSource['data'] = []
+    # The data for the chart should be in an array wherein each element of the array is a JSON object as
+    # `label` and `value` keys.
+    # Iterate through the data in `Country` model and insert in to the `dataSource['data']` list.
+    for key in vm_records.all():
+        data = {}
+        data['label'] = key.rvt_vi_vm
+        data['value'] = key.rvt_vi_unshared_mb
+        dataSource['data'].append(data)
+
+        # Create an object for the Column 2D chart using the FusionCharts class constructor
+    column2D = FusionCharts("column2D", "ex1", "100%", "400", "chart-1", "json", dataSource)
+    # returning complete JavaScript and HTML code, which is used to generate chart in the browsers.
+    return column2D
 
 
 @login_required
@@ -388,25 +448,6 @@ def handle_uploaded_file(f, p):
             destination.write(chunk)
 
     return filename
-
-
-@login_required
-def viewrvt(request, batchfilter=0):
-
-    if batchfilter == 0:
-        my_batches = RVTvInfo.objects.batches(request.user)
-        return render(request, "rvt/rvt_rvtbatchview.html",
-                      {'batches': my_batches})
-
-    else:
-        my_records = RVTvInfo.objects.records_for_batch(request.user, batchfilter)
-        onerow = my_records.all()[:1].get()
-        vcenter = onerow.rvt_vi_sdkserver
-        vctype = onerow.rvt_vi_sdks_type
-        filename = onerow.rvt_vi_filename_orig
-        return render(request, "rvt/rvt_rvtdataview.html",
-                      {'batch': batchfilter, 'vcenter': vcenter, 'vctype': vctype, 'filename': filename, 'onerow': onerow}
-                      )
 
 
 def delrvt(request, batchid):

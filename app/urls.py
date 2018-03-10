@@ -37,6 +37,7 @@ urlpatterns = [
     url('^autobrik/', include('autobrik.urls')),
     url('^rvt/', include('rvt.urls')),
     url('^org/', include('org.urls')),
+    url('^fusioncharts/', include('org.urls')),
 
 
     # EXAMPLE PARAMETER PASS
